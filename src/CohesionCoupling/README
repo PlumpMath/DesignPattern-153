@@ -1,0 +1,53 @@
+Loose Coupling and High Cohesion in Java
+
+These are the most religiously known or learnt but orthodoxly neglected principles of so-called Object-Oriented-Programming concept.
+Cohesion is something that defines how close and complete a class (module) is in its functionality. 
+
+This might represent higher cohesion
+class MyReader{
+ public MyData readFromDisk(Parameter fileName){...};
+ public MyData readFromWeb(Parameter url){...};
+ public MyData readFromNetwork(Parameter networkLoc){...};
+}
+Look how well-focused the class is in its purpose. The class is named "MyReader" and its intended purpose is to read the resource, and it does only so. It does not implement other things. Its highly cohesive. Lets look at low cohesion example. 
+/*
+ * lower cohesion example (probably)
+ */
+class MyReader{
+ //validate the resource path
+ public boolean validateLocation(String path){
+  return ping(pathIP) && checkFTP(path);
+ }
+ private static boolean ping(String path){...};
+ private static boolean checkFTP(String path){...};
+
+ //read the resource
+ public MyData readFromDisk(String fileName){...};
+ public MyData readFromWeb(String url){...};
+ public MyData readFromNetwork(String networkAddress){...};
+}
+Well, the read operations are well defined, but it also implements logic to validate path. This is just an example and describes lower cohesion, wherein, a class intended for a specific functionality is also involved in other operations.
+
+Benefits of higher cohesion:
+The objective of the class is easily understandable and enhances the readability.
+The re-usability factor is highly increased, since a highly cohesive class is considered to be almost complete in its objective.
+Further code changes or enhancement becomes very easy.
+Coupling is a measurement of interdependencies between different modules in an application. In simpler terms, how much a class is dependent on entities from another class.
+Lets say we have a class A and another class B. class A has methods that depend upon class B entities directly, so whenever there is a change in class B, there will be a risk of functionality breaking in class A. This is tight coupling where there is heavy dependency. Loose coupling means the opposite. Lets take a small example:
+class MyReader {
+ FilePath path;
+ MyReader() {
+  //tight coupling
+  path = new FilePath();
+ }
+}
+So some change to FilePath will probably hit MyReader class and force a change here too. Wait! Did we change MyReader class logic? No. Still it needs to be refactored due to tight coupling with FilePath in case the FilePath class' instantiation logic changes and the author decides to add some parameters to its constructor by removing the no-arg one or opts for factory methods thereby privatizing the no-arg constructor. 
+class MyReader {
+ FilePath path;;
+ MyReader(FilePath obj) {
+  //loose coupling, MyReader is loosely coupled with FilePath class.
+  path = obj;
+ }
+}
+Now MyReader will be provided with FilePath instance from outside, instead of it looking out. This is an example of Dependency Injection in Spring framework, where the framework will provide the instance from specific bean.xml files. In simpler terms, tight coupling is bad and risky. Note that loose coupling reduces the change risks, refactoring and thereby maintenance.
+I'd rather link a finely written article so that the concept is dead clear.
